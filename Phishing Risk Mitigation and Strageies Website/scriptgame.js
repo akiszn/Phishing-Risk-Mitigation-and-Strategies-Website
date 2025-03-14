@@ -1,30 +1,80 @@
 // Quiz Logic
-function startQuiz() {
-    const questions = [
-        "Do you reuse passwords?",
-        "Do you click links without checking?",
-        "Do you enable MFA on your accounts?"
-    ];
-    let score = 0;
+const questions = [
+    "Do you reuse passwords?", // Risky behavior
+    "Do you click links without checking?", // Risky behavior
+    "Do you enable MFA on your accounts?" // Safe behavior
+];
 
-    questions.forEach((question, index) => {
-        const answer = confirm(question);
-        if (answer) score++;
-    });
+let currentQuestionIndex = 0;
+let score = 0;
 
-    const results = document.getElementById("quiz-results");
-    if (score === 0) {
-        results.innerHTML = "<p>You're a Phish Ninja! 🐟</p>";
-    } else if (score <= 2) {
-        results.innerHTML = "<p>You're at moderate risk. Be careful!</p>";
+const quizQuestion = document.getElementById("quiz-question");
+const yesButton = document.getElementById("yes-button");
+const noButton = document.getElementById("no-button");
+const quizFeedback = document.getElementById("quiz-feedback");
+const quizResults = document.getElementById("quiz-results");
+const progressBar = document.getElementById("progress-bar");
+
+function loadQuestion() {
+    if (currentQuestionIndex < questions.length) {
+        quizQuestion.textContent = questions[currentQuestionIndex];
+        progressBar.style.width = `${((currentQuestionIndex + 1) / questions.length) * 100}%`;
     } else {
-        results.innerHTML = "<p>You're a Phish Magnet! 🎣</p>";
+        showResults();
     }
 }
 
-// Shield Builder Game
+function handleAnswer(answer) {
+    // Check if the current question is about enabling MFA
+    const isMFAQuestion = questions[currentQuestionIndex].includes("enable MFA");
+
+    // Update score based on the question
+    if (isMFAQuestion) {
+        // For MFA question, "Yes" is safe (add to score), "No" is risky (do not add)
+        if (answer) score++;
+    } else {
+        // For other questions, "No" is safe (add to score), "Yes" is risky (do not add)
+        if (!answer) score++;
+    }
+
+    currentQuestionIndex++;
+    quizFeedback.textContent = answer === isMFAQuestion ? "Correct! 🎉" : "Oops! Be careful. 😅";
+    quizFeedback.style.color = answer === isMFAQuestion ? "green" : "red";
+    setTimeout(() => {
+        quizFeedback.textContent = "";
+        loadQuestion();
+    }, 1000);
+}
+
+yesButton.addEventListener("click", () => handleAnswer(true)); // "Yes" for MFA is safe
+noButton.addEventListener("click", () => handleAnswer(false)); // "No" for MFA is risky
+
+function showResults() {
+    let resultText;
+    if (score === questions.length) {
+        resultText = "<p>You're a Phish Ninja! 🐟</p><p>You have excellent basic phishing awareness!</p>";
+    } else if (score >= 1) {
+        resultText = "<p>You're at moderate risk. Be careful!</p><p>Review your online habits to stay safe.</p>";
+    } else {
+        resultText = "<p>You're a Phish Magnet! 🎣</p><p>Take steps to improve your phishing awareness.</p>";
+    }
+    quizResults.innerHTML = resultText;
+    quizQuestion.textContent = "Quiz Complete!";
+    yesButton.style.display = "none";
+    noButton.style.display = "none";
+}
+
+// Start the quiz
+loadQuestion();
+
+// Shield Builder Game Logic
 const tools = document.querySelectorAll(".tool");
 const shield = document.getElementById("shield");
+const progressBar1 = document.getElementById("progress-bar");
+const shieldFeedback = document.getElementById("shield-feedback");
+
+let toolsAdded = 0;
+const totalTools = tools.length;
 
 tools.forEach(tool => {
     tool.addEventListener("dragstart", (e) => {
@@ -40,6 +90,29 @@ shield.addEventListener("drop", (e) => {
     e.preventDefault();
     const tool = e.dataTransfer.getData("text/plain");
     shield.innerHTML = `<p>${tool.toUpperCase()} added!</p>`;
+    toolsAdded++;
+
+    // Update progress bar
+    progressBar1.style.width = `${(toolsAdded / totalTools) * 100}%`;
+
+    // Provide feedback
+    switch (tool) {
+        case "mfa":
+            shieldFeedback.textContent = "MFA added! This helps secure your accounts.";
+            break;
+        case "password-manager":
+            shieldFeedback.textContent = "Password Manager added! Now you can create strong passwords.";
+            break;
+        case "antivirus":
+            shieldFeedback.textContent = "Antivirus added! Your devices are now protected from malware.";
+            break;
+    }
+
+    // Check if all tools are added
+    if (toolsAdded === totalTools) {
+        shieldFeedback.textContent = "Congratulations! Your Phish Shield is complete. 🎉";
+        shieldFeedback.style.color = "green";
+    }
 });
 
 // PhishHunter Game
@@ -122,51 +195,176 @@ document.querySelectorAll(".respond-option").forEach(button => {
 
 loadRespondScenario();
 
-// Recover Game Logic
-const recoverScenarios = [
+// Phish Detective Game Logic spot red flag
+const emailDisplay = document.getElementById("email-display");
+const detectiveScoreDisplay = document.getElementById("detective-score");
+const detectiveFeedback = document.getElementById("detective-feedback");
+let detectiveScore = 0;
+
+const emails = [
     {
-        scenario: "You clicked a phishing link and entered your password. What's the first step to recover?",
-        correctAction: "reset-passwords"
+        content: `Dear Customer,<br>
+                  Your account will be locked unless you <span class="red-flag">verify your details</span> immediately.<br>
+                  Click <span class="red-flag">here</span> to avoid account suspension.<br>
+                  Sincerely,<br>
+                  <span class="red-flag">Support Team</span>`,
+        redFlags: ["verify your details", "here", "Support Team"]
     },
     {
-        scenario: "You suspect your account was compromised. What should you enable to secure it?",
-        correctAction: "enable-mfa"
-    },
-    {
-        scenario: "You're unsure how to proceed after a phishing attack. Who should you contact?",
-        correctAction: "contact-support"
+        content: `Hello,<br>
+                  You've won a $1000 gift card! Click <span class="red-flag">this link</span> to claim your prize.<br>
+                  Hurry, offer ends soon!<br>
+                  Best,<br>
+                  <span class="red-flag">Prize Team</span>`,
+        redFlags: ["this link", "Prize Team"]
     }
 ];
 
-let currentRecoverScenario = 0;
-let recoverScore = 0;
-const recoverScenarioElement = document.getElementById("recover-scenario");
-const recoverFeedback = document.getElementById("recover-feedback");
-const recoverScoreDisplay = document.getElementById("recover-score");
+let currentEmailIndex = 0;
 
-function loadRecoverScenario() {
-    recoverScenarioElement.textContent = recoverScenarios[currentRecoverScenario].scenario;
-    recoverFeedback.textContent = "";
+function loadEmail() {
+    emailDisplay.innerHTML = emails[currentEmailIndex].content;
+    detectiveFeedback.textContent = "";
+
+    document.querySelectorAll(".red-flag").forEach(flag => {
+        flag.addEventListener("click", () => {
+            if (emails[currentEmailIndex].redFlags.includes(flag.textContent)) {
+                detectiveScore++;
+                detectiveFeedback.textContent = "Correct! 🎉";
+                detectiveFeedback.style.color = "green";
+                flag.style.color = "green";
+            } else {
+                detectiveScore--;
+                detectiveFeedback.textContent = "Oops! Not a red flag. 😅";
+                detectiveFeedback.style.color = "red";
+            }
+            detectiveScoreDisplay.textContent = `Score: ${detectiveScore}`;
+        });
+    });
 }
 
-document.querySelectorAll(".recover-option").forEach(button => {
-    button.addEventListener("click", () => {
-        const selectedAction = button.dataset.action;
-        const correctAction = recoverScenarios[currentRecoverScenario].correctAction;
+loadEmail();
 
-        if (selectedAction === correctAction) {
-            recoverFeedback.textContent = "Correct! You're on the right track! 🎉";
-            recoverFeedback.style.color = "green";
-            recoverScore++;
+// Load next email after a delay
+setInterval(() => {
+    currentEmailIndex = (currentEmailIndex + 1) % emails.length;
+    loadEmail();
+}, 10000); // Change email every 10 seconds
+
+
+// Phish Fall Game Logic
+const fallArea = document.getElementById("fall-area");
+const fallScoreDisplay = document.getElementById("fall-score");
+const fallFeedback = document.getElementById("fall-feedback");
+let fallScore = 0;
+let emailSpeed = 2; // Initial speed of emails
+let emailInterval = 2000; // Initial interval between emails
+let lastEmailTime = 0; // Track the time of the last email creation
+const minEmailSpacing = 300; // Minimum spacing between emails (in pixels)
+
+function createEmail(isPhish) {
+    const email = document.createElement("div");
+    email.classList.add("email");
+    email.textContent = isPhish ? "Phish" : "Legit";
+    email.style.left = `${Math.random() * (fallArea.offsetWidth - 100)}px`; // Random horizontal position
+    email.style.top = "0";
+    fallArea.appendChild(email);
+
+    const fall = setInterval(() => {
+        const top = parseInt(email.style.top) || 0;
+        if (top >= fallArea.offsetHeight - 50) {
+            clearInterval(fall);
+            fallArea.removeChild(email);
+            if (!isPhish) {
+                fallFeedback.textContent = "Missed a legit email! 😅";
+                fallFeedback.style.color = "red";
+            }
         } else {
-            recoverFeedback.textContent = "Not quite! Let's try again.";
-            recoverFeedback.style.color = "red";
+            email.style.top = `${top + emailSpeed}px`;
         }
+    }, 50);
 
-        recoverScoreDisplay.textContent = `Score: ${recoverScore}`;
-        currentRecoverScenario = (currentRecoverScenario + 1) % recoverScenarios.length;
-        setTimeout(loadRecoverScenario, 2000);
+    email.addEventListener("click", () => {
+        if (!isPhish) {
+            fallScore++;
+            fallFeedback.textContent = "Caught a legit email! 🎉";
+            fallFeedback.style.color = "green";
+        } else {
+            fallScore--;
+            fallFeedback.textContent = "Oops! That was a phish. 😅";
+            fallFeedback.style.color = "red";
+        }
+        fallScoreDisplay.textContent = `Score: ${fallScore}`;
+        fallArea.removeChild(email);
+        clearInterval(fall);
+
+        // Increase difficulty every 5 points
+        if (fallScore % 5 === 0) {
+            emailSpeed += 1; // Increase speed
+            emailInterval = Math.max(1000, emailInterval - 200); // Decrease interval
+            clearInterval(emailCreationInterval);
+            emailCreationInterval = setInterval(() => {
+                createEmail(Math.random() > 0.5); // 50% chance of phishing
+            }, emailInterval);
+        }
     });
-});
+}
 
-loadRecoverScenario();
+function spawnEmail() {
+    const currentTime = Date.now();
+    if (currentTime - lastEmailTime >= emailInterval) {
+        createEmail(Math.random() > 0.5); // 50% chance of phishing
+        lastEmailTime = currentTime;
+    }
+}
+
+let emailCreationInterval = setInterval(spawnEmail, emailInterval);
+
+
+// Phish Recovery Game Logic
+const recoveryStatus = document.getElementById("recovery-status");
+const recoveryTasks = document.getElementById("recovery-tasks");
+const recoveryScoreDisplay = document.getElementById("recovery-score");
+const recoveryFeedback = document.getElementById("recovery-feedback");
+let recoveryScore = 0;
+
+const tasks = [
+    { name: "Reset Passwords", completed: false },
+    { name: "Enable MFA", completed: false },
+    { name: "Scan for Malware", completed: false },
+    { name: "Contact Support", completed: false }
+];
+
+function loadRecoveryGame() {
+    recoveryStatus.textContent = "System Compromised! Complete the tasks to recover.";
+    recoveryTasks.innerHTML = "";
+
+    tasks.forEach((task, index) => {
+        const taskButton = document.createElement("button");
+        taskButton.classList.add("task");
+        taskButton.textContent = task.name;
+        taskButton.addEventListener("click", () => {
+            if (!task.completed) {
+                task.completed = true;
+                recoveryScore++;
+                recoveryFeedback.textContent = `Task completed: ${task.name} 🎉`;
+                recoveryFeedback.style.color = "green";
+                taskButton.style.backgroundColor = "#004d40";
+                taskButton.style.cursor = "not-allowed";
+            } else {
+                recoveryFeedback.textContent = "Task already completed!";
+                recoveryFeedback.style.color = "red";
+            }
+            recoveryScoreDisplay.textContent = `Score: ${recoveryScore}`;
+
+            if (tasks.every(t => t.completed)) {
+                recoveryStatus.textContent = "System Restored! 🎉";
+                recoveryFeedback.textContent = "Congratulations! You've recovered the system.";
+                recoveryFeedback.style.color = "green";
+            }
+        });
+        recoveryTasks.appendChild(taskButton);
+    });
+}
+
+loadRecoveryGame();
