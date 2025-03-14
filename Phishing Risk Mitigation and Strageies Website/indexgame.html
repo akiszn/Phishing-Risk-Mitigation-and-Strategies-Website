@@ -31,82 +31,106 @@
     </header>
 
     <!-- Identify Section -->
-    <section id="identify" class="section">
+     <section id="identify" class="section">
         <div class="section-content">
-            <h2>Identify: Are You a Phish Magnet?</h2>
+            <h2>Phish Identification: Are You a Phish Magnet?</h2>
             <p>Take the PhishRisk Quiz to find out!</p>
-            <button onclick="startQuiz()" class="quiz-button">Start Quiz</button>
+            <div id="quiz-container">
+                <div id="quiz-progress">
+                    <div id="progress-bar"></div>
+                </div>
+                <p id="quiz-question"></p>
+                <div id="quiz-options">
+                    <button id="yes-button">Yes</button>
+                    <button id="no-button">No</button>
+                </div>
+                <p id="quiz-feedback"></p>
+            </div>
             <div id="quiz-results" class="quiz-results"></div>
         </div>
     </section>
-
-    <!-- Protect Section -->
-    <section id="protect" class="section">
-        <div class="section-content">
-            <h2>Protect: Build Your Phish Shield!</h2>
-            <p>Drag and drop tools to protect yourself.</p>
-            <div id="shield-builder">
-                <div class="tool" draggable="true" data-tool="mfa">
-                    <i class="fas fa-shield-alt"></i>
-                    <span>MFA</span>
-                </div>
-                <div class="tool" draggable="true" data-tool="password-manager">
-                    <i class="fas fa-key"></i>
-                    <span>Password Manager</span>
-                </div>
-                <div class="tool" draggable="true" data-tool="antivirus">
-                    <i class="fas fa-shield-virus"></i>
-                    <span>Antivirus</span>
-                </div>
+<!-- Protect Section -->
+<section id="protect" class="section">
+    <div class="section-content">
+        <h2>Phish Protection: Build Your Phish Shield!</h2>
+        <p>Drag and drop tools to protect yourself.</p>
+        <div id="shield-builder">
+            <div class="tool" draggable="true" data-tool="mfa">
+                <i class="fas fa-shield-alt"></i>
+                <span>MFA</span>
+                <div class="tooltip">Multi-Factor Authentication adds an extra layer of security.</div>
             </div>
-            <div id="shield"></div>
-        </div>
-    </section>
-
-    <!-- Detect Section -->
-    <section id="detect" class="section">
-        <div class="section-content">
-            <h2>Detect: Spot the Phish!</h2>
-            <p>Play the PhishHunter Game to test your skills.</p>
-            <div id="phishhunter-game">
-                <div id="game-area"></div>
-                <p id="game-score">Score: 0</p>
+            <div class="tool" draggable="true" data-tool="password-manager">
+                <i class="fas fa-key"></i>
+                <span>Password Manager</span>
+                <div class="tooltip">Password Managers help you create and store strong passwords.</div>
+            </div>
+            <div class="tool" draggable="true" data-tool="antivirus">
+                <i class="fas fa-shield-virus"></i>
+                <span>Antivirus</span>
+                <div class="tooltip">Antivirus software protects your devices from malware.</div>
             </div>
         </div>
-    </section>
-
-    <!-- Respond Game -->
-    <section id="respond">
-        <h2>Respond: Phish Responder Challenge</h2>
-        <p>Test your ability to respond to phishing scenarios!</p>
-        <div id="respond-game">
-            <p id="respond-instruction">Click the correct action for the scenario below:</p>
-            <div id="scenario"></div>
-            <div id="respond-options">
-                <button class="respond-option" data-action="pause">Pause</button>
-                <button class="respond-option" data-action="verify">Verify</button>
-                <button class="respond-option" data-action="report">Report</button>
-            </div>
-            <p id="respond-feedback"></p>
-            <p id="respond-score">Score: 0</p>
+        <div id="shield"></div>
+        <div id="shield-progress">
+            <div id="progress-bar"></div>
         </div>
-    </section>
+        <p id="shield-feedback"></p>
+    </div>
+</section>
 
-    <!-- Recover Game -->
-    <section id="recover">
-        <h2>Recover: Phish Recovery Adventure</h2>
-        <p>Help the character recover from a phishing attack!</p>
-        <div id="recover-game">
-            <div id="recover-scenario"></div>
-            <div id="recover-options">
-                <button class="recover-option" data-action="reset-passwords">Reset Passwords</button>
-                <button class="recover-option" data-action="enable-mfa">Enable MFA</button>
-                <button class="recover-option" data-action="contact-support">Contact Support</button>
-            </div>
-            <p id="recover-feedback"></p>
-            <p id="recover-score">Score: 0</p>
+
+    <!-- Phish Detective Game -->
+<section id="detect">
+    <h2>Phish Detection: Spot the Red Flags</h2>
+    <p>Identify phishing red flags in emails!</p>
+    <div id="phish-detective-game">
+        <div id="email-display"></div>
+        <p id="detective-score">Score: 0</p>
+        <p id="detective-feedback"></p>
+    </div>
+</section>
+
+ <!-- Respond Game -->
+ <section id="respond">
+    <h2>Phish Respond: Phish Responder Challenge</h2>
+    <p>Test your ability to respond to phishing scenarios!</p>
+    <div id="respond-game">
+        <p id="respond-instruction">Click the correct action for the scenario below:</p>
+        <div id="scenario"></div>
+        <div id="respond-options">
+            <button class="respond-option" data-action="pause">Pause</button>
+            <button class="respond-option" data-action="verify">Verify</button>
+            <button class="respond-option" data-action="report">Report</button>
         </div>
-    </section>
+        <p id="respond-feedback"></p>
+        <p id="respond-score">Score: 0</p>
+    </div>
+</section>
+
+ <!-- Phish Recovery Game -->
+ <section id="recover">
+    <h2>Phish Recovery: Restore the System</h2>
+    <p>Complete tasks to recover from a phishing attack!</p>
+    <div id="phish-recovery-game">
+        <div id="recovery-status"></div>
+        <div id="recovery-tasks"></div>
+        <p id="recovery-score">Score: 0</p>
+        <p id="recovery-feedback"></p>
+    </div>
+</section>
+
+ <!-- Phish Fall Game -->
+ <section id="phish-fall">
+    <h2>Phish Fall: Catch the Legit Emails</h2>
+    <p>Catch legitimate emails while avoiding phishing ones!</p>
+    <div id="phish-fall-game">
+        <div id="fall-area"></div>
+        <p id="fall-score">Score: 0</p>
+        <p id="fall-feedback"></p>
+    </div>
+</section>
+
     <!-- Footer -->
     <footer>
         <div class="footer-content">
