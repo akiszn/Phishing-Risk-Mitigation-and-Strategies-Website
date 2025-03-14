@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhishGuard: Play, Learn, Protect</title>
+    <link rel="stylesheet" href="stylesgame.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+        <!-- Navigation -->
+        <nav>
+            <div class="nav-container">
+                <div class="logo">PhishGuard</div>
+                <ul>
+                    <li><a href="#identify">Identify</a></li>
+                    <li><a href="#protect">Protect</a></li>
+                    <li><a href="#detect">Detect</a></li>
+                    <li><a href="#respond">Respond</a></li>
+                    <li><a href="#recover">Recover</a></li>
+                </ul>
+            </div>
+        </nav>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <h1>Welcome to <span class="highlight">PhishGuard</span>!</h1>
+            <p>Play, Learn, and Protect Yourself from Phishing</p>
+        </div>
+    </header>
+
+    <!-- Identify Section -->
+    <section id="identify" class="section">
+        <div class="section-content">
+            <h2>Identify: Are You a Phish Magnet?</h2>
+            <p>Take the PhishRisk Quiz to find out!</p>
+            <button onclick="startQuiz()" class="quiz-button">Start Quiz</button>
+            <div id="quiz-results" class="quiz-results"></div>
+        </div>
+    </section>
+
+    <!-- Protect Section -->
+    <section id="protect" class="section">
+        <div class="section-content">
+            <h2>Protect: Build Your Phish Shield!</h2>
+            <p>Drag and drop tools to protect yourself.</p>
+            <div id="shield-builder">
+                <div class="tool" draggable="true" data-tool="mfa">
+                    <i class="fas fa-shield-alt"></i>
+                    <span>MFA</span>
+                </div>
+                <div class="tool" draggable="true" data-tool="password-manager">
+                    <i class="fas fa-key"></i>
+                    <span>Password Manager</span>
+                </div>
+                <div class="tool" draggable="true" data-tool="antivirus">
+                    <i class="fas fa-shield-virus"></i>
+                    <span>Antivirus</span>
+                </div>
+            </div>
+            <div id="shield"></div>
+        </div>
+    </section>
+
+    <!-- Detect Section -->
+    <section id="detect" class="section">
+        <div class="section-content">
+            <h2>Detect: Spot the Phish!</h2>
+            <p>Play the PhishHunter Game to test your skills.</p>
+            <div id="phishhunter-game">
+                <div id="game-area"></div>
+                <p id="game-score">Score: 0</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Respond Game -->
+    <section id="respond">
+        <h2>Respond: Phish Responder Challenge</h2>
+        <p>Test your ability to respond to phishing scenarios!</p>
+        <div id="respond-game">
+            <p id="respond-instruction">Click the correct action for the scenario below:</p>
+            <div id="scenario"></div>
+            <div id="respond-options">
+                <button class="respond-option" data-action="pause">Pause</button>
+                <button class="respond-option" data-action="verify">Verify</button>
+                <button class="respond-option" data-action="report">Report</button>
+            </div>
+            <p id="respond-feedback"></p>
+            <p id="respond-score">Score: 0</p>
+        </div>
+    </section>
+
+    <!-- Recover Game -->
+    <section id="recover">
+        <h2>Recover: Phish Recovery Adventure</h2>
+        <p>Help the character recover from a phishing attack!</p>
+        <div id="recover-game">
+            <div id="recover-scenario"></div>
+            <div id="recover-options">
+                <button class="recover-option" data-action="reset-passwords">Reset Passwords</button>
+                <button class="recover-option" data-action="enable-mfa">Enable MFA</button>
+                <button class="recover-option" data-action="contact-support">Contact Support</button>
+            </div>
+            <p id="recover-feedback"></p>
+            <p id="recover-score">Score: 0</p>
+        </div>
+    </section>
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2023 PhishGuard. All rights reserved.</p>
+            <div class="social-icons">
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+            </div>
+        </div>
+    </footer>
+    <script src="scriptgame.js"></script>
+</body>
+</html>
